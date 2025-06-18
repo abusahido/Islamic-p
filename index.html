@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeenTime+ - Islamic Super App</title>
+    <style>
+        :root {
+            --primary-color: #2CA4AB;
+            --secondary-color: #F5F5F5;
+            --text-color: #333;
+            --light-text: #777;
+            --dark-bg: #1E293B;
+            --card-bg: #FFFFFF;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --accent-color: #8E44AD;
+        }
+        
+        .dark-mode {
+            --secondary-color: #1E293B;
+            --text-color: #F5F5F5;
+            --light-text: #AAAAAA;
+            --card-bg: #334155;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: var(--secondary-color);
+            overflow: hidden;
+        }
+        
+        .app-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 101;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-actions button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--card-bg);
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--light-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            cursor: pointer;
+            flex-grow: 1;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-btn.active {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .prayer-times {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .prayer-time {
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+        }
+        
+        .prayer-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .ayah-card, .hadith-card { 
+            position: relative; 
+        }
+        
+        .ayah-text, .hadith-text { 
+            margin-bottom: 15px; 
+        }
+        
+        .arabic {
+            font-size: 22px;
+            text-align: right;
+            margin-bottom: 10px;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            line-height: 1.8;
+        }
+        
+        .translation {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--light-text);
+        }
+        
+        .ayah-actions, .hadith-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--secondary-color);
+            padding-top: 10px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            color: var(--accent-color);
+        }
+        .action-btn i { margin-right: 5px; }
+        .action-btn .fa-heart { color: var(--primary-color); }
+        .action-btn .fas.fa-heart { color: #e91e63; } /* Liked color */
+
+        
+        .hidden { display: none; }
+        
+        #voice-assistant {
+            text-align: center;
+            padding: 30px 15px;
+        }
+        
+        #voice-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(44, 164, 171, 0.5);
+            transition: transform 0.2s ease, background-color 0.3s;
+        }
+        #voice-btn.listening {
+            background-color: #e91e63;
+            animation: pulse 1.5s infinite;
+        }
+        #voice-btn:active {
+            transform: scale(0.95);
+        }
+        
+        #voice-result {
+            margin-top: 20px;
+            min-height: 50px;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        #sunnah-container {
+            width: 100%;
+            height: calc(100vh - 135px);
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+        select, .settings-option button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--light-text);
+            background: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--light-text);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+        #search-results .card {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+         #search-results .card:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Basic switch for dark mode toggle */
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(44, 164, 171, 0.3);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(233, 30, 99, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(233, 30, 99, 0); }
+        }
+        
+        .location-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .content-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .content-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .content-container::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+        
+        .content-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        .content-container::-webkit-scrollbar-thumb:hover {
+            background: #1d8d93;
+        }
+        
+        .voice-response {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: var(--secondary-color);
+            margin-top: 10px;
+        }
+        
+        .voice-response-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .permission-warning {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="light-mode">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>DeenTime+</h1>
+            <div class="header-actions">
+                <button id="refresh-btn" class="refresh-btn" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button id="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content" id="app-content">
+            <!-- Home Page -->
+            <div id="home-page">
+                <!-- Prayer Times Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="prayer_times">Prayer Times</h2>
+                        <div class="location-indicator">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="current-location">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="prayer-times" id="prayer-times-container">
+                        <div class="loading-indicator">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Today's Ayah Card -->
+                <div class="card ayah-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="ayah_of_day">Ayah of the Day</h2>
+                        <span id="ayah-reference">Loading...</span>
+                    </div>
+                    <div class="content-container">
+                        <div class="ayah-text">
+                            <p class="arabic" id="ayah-arabic">...</p>
+                            <p class="translation" id="ayah-translation">Loading translation...</p>
+                        </div>
+                    </div>
+                    <div class="ayah-actions">
+                        <button class="action-btn like-btn">
+                            <i class="far fa-heart"></i> <span data-translate-key="like">Like</span>
+                        </button>
+                        <button class="action-btn audio-btn">
+                            <i class="fas fa-play"></i> <span data-translate-key="play">Play</span>
+                        </button>
+                        <button class="action-btn share-btn">
+                            <i class="fas fa-share-alt"></i> <span data-translate-key="share">Share</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Hadith of the Day -->
+                <div class="card hadith-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="hadith_of_day">Hadith of the Day</h2>
+                    </div>
+                    <div class="content-container">
+                        <div class="hadith-text">
+                            <p class="arabic" id="hadith-arabic">...</p>
+                            <p class="translation" id="hadith-translation">Loading hadith...</p>
+                            <p id="hadith-reference" style="text-align: right; font-style: italic; color: var(--light-text);"></p>
+                        </div>
+                    </div>
+                    <div class="hadith-actions">
+                        <button class="action-btn like-btn">
+                            <i class="far fa-heart"></i> <span data-translate-key="like">Like</span>
+                        </button>
+                        <button class="action-btn share-btn">
+                            <i class="fas fa-share-alt"></i> <span data-translate-key="share">Share</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Hijri Date -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-translate-key="islamic_date">Islamic Date</h2>
+                    </div>
+                    <div id="hijri-date" style="text-align: center; font-size: 18px; padding: 10px;">
+                        <div class="loading-indicator">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Page -->
+            <div id="search-page" class="hidden">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search Quran (e.g., heaven, prayer)..." data-translate-key="search_placeholder">
+                </div>
+                <div id="search-results">
+                    <div class="card">
+                        <p data-translate-key="search_prompt">Search for Quranic verses or topics.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Voice Assistant Page -->
+            <div id="voice-page" class="hidden">
+                <div id="voice-assistant">
+                    <button id="voice-btn"><i class="fas fa-microphone"></i></button>
+                    <div id="voice-result">
+                        <p data-translate-key="voice_prompt1">Press the microphone and speak.</p>
+                        <p data-translate-key="voice_prompt2">Try: "What is Fajr time?" or "Play Surah Fatiha".</p>
+                        <div class="permission-warning" id="permission-warning" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span data-translate-key="permission_warning">Microphone permission required. Please allow access.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sunnah.com Page -->
+            <div id="sunnah-page" class="hidden">
+                <iframe id="sunnah-container" src="https://sunnah.com"></iframe>
+            </div>
+            
+            <!-- More/Settings Page -->
+            <div id="more-page" class="hidden">
+                <div class="card">
+                    <h2 class="card-title" data-translate-key="settings">Settings</h2>
+                    
+                    <div class="settings-option">
+                        <span data-translate-key="dark_mode">Dark Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-switch">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <span data-translate-key="language">Language</span>
+                        <select id="language-selector">
+                            <option value="en">English</option>
+                            <option value="bn">বাংলা (Bengali)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <span data-translate-key="calculation_method">Prayer Time Calculation</span>
+                        <select id="calculation-method">
+                            <option value="2">ISNA</option>
+                            <option value="1">Karachi</option>
+                            <option value="3">Muslim World League</option>
+                            <option value="4">Umm Al-Qura, Makkah</option>
+                            <option value="5">Egyptian</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-option">
+                        <span data-translate-key="about">About DeenTime+</span>
+                        <button id="about-btn">View</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="home">
+                <i class="fas fa-home"></i> <span data-translate-key="nav_home">Home</span>
+            </button>
+            <button class="nav-btn" data-page="search">
+                <i class="fas fa-search"></i> <span data-translate-key="nav_search">Search</span>
+            </button>
+            <button class="nav-btn" data-page="voice">
+                <i class="fas fa-microphone"></i> <span data-translate-key="nav_voice">Voice</span>
+            </button>
+            <button class="nav-btn" data-page="sunnah">
+                <i class="fas fa-book-open"></i> <span data-translate-key="nav_sunnah">Sunnah</span>
+            </button>
+            <button class="nav-btn" data-page="more">
+                <i class="fas fa-ellipsis-h"></i> <span data-translate-key="nav_more">More</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // --- APP STATE & CONFIG ---
+        let prayerTimesData = {};
+        let currentAyahAudioUrl = '';
+        let currentLanguage = localStorage.getItem('deenTimeLanguage') || 'en';
+        let voiceRecognitionActive = false;
+        const audioPlayer = new Audio();
+        
+        // Sample hadiths for demonstration
+        const hadiths = [
+            {
+                arabic: "قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: \"مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ\"",
+                translation: "The Messenger of Allah (ﷺ) said: \"Whoever takes a path upon which to obtain knowledge, Allah makes the path to Paradise easy for him.\"",
+                reference: "Jami` at-Tirmidhi 2646"
+            },
+            {
+                arabic: "عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: \"لَا تَحَاسَدُوا، وَلَا تَنَاجَشُوا، وَلَا تَبَاغَضُوا، وَلَا تَدَابَرُوا، وَلَا يَبِعْ بَعْضُكُمْ عَلَى بَيْعِ بَعْضٍ، وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا\"",
+                translation: "Abu Huraira reported: The Messenger of Allah (ﷺ) said: \"Do not envy one another, do not hate one another, do not turn away from one another, and do not undercut one another in trade. Rather, be servants of Allah as brothers.\"",
+                reference: "Sahih Muslim 2559"
+            },
+            {
+                arabic: "عَنْ أَبِي ذَرٍّ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: \"اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ\"",
+                translation: "Abu Dharr reported: The Messenger of Allah (ﷺ) said: \"Be conscious of Allah wherever you are. Follow a bad deed with a good deed to erase it, and treat people with good character.\"",
+                reference: "Jami` at-Tirmidhi 1987"
+            }
+        ];
+
+        // --- TRANSLATIONS ---
+        const translations = {
+            en: {
+                prayer_times: "Prayer Times",
+                loading_prayer_times: "Loading prayer times...",
+                ayah_of_day: "Ayah of the Day",
+                hadith_of_day: "Hadith of the Day",
+                islamic_date: "Islamic Date",
+                like: "Like",
+                play: "Play",
+                pause: "Pause",
+                share: "Share",
+                search_placeholder: "Search Quran (e.g., heaven, prayer)...",
+                search_prompt: "Search for Quranic verses or topics.",
+                voice_prompt1: "Press the microphone and speak.",
+                voice_prompt2: "Try: \"What is Fajr time?\" or \"Play Surah Fatiha\".",
+                settings: "Settings",
+                dark_mode: "Dark Mode",
+                language: "Language",
+                calculation_method: "Prayer Time Calculation",
+                about: "About DeenTime+",
+                nav_home: "Home",
+                nav_search: "Search",
+                nav_voice: "Voice",
+                nav_sunnah: "Sunnah",
+                nav_more: "More",
+                location_error: "Location access denied. Showing default times.",
+                fetching_location: "Fetching location...",
+                listening: "Listening...",
+                processing: "Processing...",
+                command_unrecognized: "I didn't understand that. Please try again.",
+                prayer_time_for: "Prayer time for",
+                is: "is",
+                playing_surah: "Playing Surah",
+                hadith_of_day: "Hadith of the Day",
+                permission_warning: "Microphone permission required. Please allow access."
+            },
+            bn: {
+                prayer_times: "নামাজের সময়",
+                loading_prayer_times: "নামাজের সময় লোড হচ্ছে...",
+                ayah_of_day: "দিনের আয়াত",
+                hadith_of_day: "দিনের হাদিস",
+                islamic_date: "ইসলামিক তারিখ",
+                like: "লাইক",
+                play: "প্লে করুন",
+                pause: "বিরতি",
+                share: "শেয়ার করুন",
+                search_placeholder: "কুরআন অনুসন্ধান করুন (যেমন: জান্নাত, সালাত)...",
+                search_prompt: "কুরআনের আয়াত বা বিষয় অনুসন্ধান করুন।",
+                voice_prompt1: "মাইক্রোফোন চেপে কথা বলুন।",
+                voice_prompt2: "বলুন: \"ফজরের সময় কখন?\" অথবা \"সূরা ফাতিহা প্লে করুন\"।",
+                settings: "সেটিংস",
+                dark_mode: "ডার্ক মোড",
+                language: "ভাষা",
+                calculation_method: "নামাজের সময় গণনা পদ্ধতি",
+                about: "DeenTime+ সম্পর্কে",
+                nav_home: "হোম",
+                nav_search: "অনুসন্ধান",
+                nav_voice: "ভয়েস",
+                nav_sunnah: "সুন্নাহ",
+                nav_more: "আরও",
+                location_error: "লোকেশন অ্যাক্সেস পাওয়া যায়নি। ডিফল্ট সময় দেখানো হচ্ছে।",
+                fetching_location: "লোকেশন খোঁজা হচ্ছে...",
+                listening: "শুনছি...",
+                processing: "প্রসেসিং...",
+                command_unrecognized: "আমি বুঝতে পারিনি। অনুগ্রহ করে আবার চেষ্টা করুন।",
+                prayer_time_for: "নামাজের সময়",
+                is: "হচ্ছে",
+                playing_surah: "প্লে করা হচ্ছে সূরা",
+                hadith_of_day: "দিনের হাদিস",
+                permission_warning: "মাইক্রোফোন এক্সেস প্রয়োজন। অনুগ্রহ করে এক্সেস দিন।"
+            }
+        };
+
+        // --- DOM ELEMENTS ---
+        const pages = {
+            home: document.getElementById('home-page'),
+            search: document.getElementById('search-page'),
+            voice: document.getElementById('voice-page'),
+            sunnah: document.getElementById('sunnah-page'),
+            more: document.getElementById('more-page')
+        };
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const darkModeSwitch = document.getElementById('dark-mode-switch');
+        const prayerTimesContainer = document.getElementById('prayer-times-container');
+        const currentLocationEl = document.getElementById('current-location');
+        const hijriDateEl = document.getElementById('hijri-date');
+        const ayahRefEl = document.getElementById('ayah-reference');
+        const ayahArabicEl = document.getElementById('ayah-arabic');
+        const ayahTranslationEl = document.getElementById('ayah-translation');
+        const hadithArabicEl = document.getElementById('hadith-arabic');
+        const hadithTranslationEl = document.getElementById('hadith-translation');
+        const hadithRefEl = document.getElementById('hadith-reference');
+        const audioBtn = document.querySelector('.audio-btn');
+        const searchInput = document.getElementById('search-input');
+        const searchResultsContainer = document.getElementById('search-results');
+        const languageSelector = document.getElementById('language-selector');
+        const calcMethodSelector = document.getElementById('calculation-method');
+        const voiceBtn = document.getElementById('voice-btn');
+        const voiceResultEl = document.getElementById('voice-result');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const themeToggle = document.getElementById('theme-toggle');
+        const permissionWarning = document.getElementById('permission-warning');
+
+        // --- CORE FUNCTIONS ---
+        function initApp() {
+            // Dark Mode
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            darkModeSwitch.checked = isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            updateThemeIcon(isDarkMode);
+
+            // Language
+            languageSelector.value = currentLanguage;
+            updateUIForLanguage();
+
+            // Load data
+            getLocationAndLoadData();
+            
+            // Set random hadith
+            setRandomHadith();
+            
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            // Navigation
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const page = button.getAttribute('data-page');
+                    showPage(page);
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
+
+            // Settings
+            darkModeSwitch.addEventListener('change', toggleDarkMode);
+            languageSelector.addEventListener('change', changeLanguage);
+            calcMethodSelector.addEventListener('change', getLocationAndLoadData);
+            themeToggle.addEventListener('click', toggleDarkMode);
+
+            // Ayah Actions
+            audioBtn.addEventListener('click', toggleAyahAudio);
+            document.querySelectorAll('.share-btn').forEach(btn => btn.addEventListener('click', shareContent));
+            document.querySelectorAll('.like-btn').forEach(btn => btn.addEventListener('click', toggleLike));
+            
+            // Search
+            let searchTimeout;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    performSearch(searchInput.value.trim());
+                }, 500); // Debounce
+            });
+            
+            // Voice Assistant
+            setupVoiceRecognition();
+            
+            // About button
+            document.getElementById('about-btn').addEventListener('click', () => {
+                alert('DeenTime+ v1.0\nYour all-in-one Islamic Super App.');
+            });
+            
+            // Refresh button
+            refreshBtn.addEventListener('click', () => {
+                getLocationAndLoadData();
+                fetchAyahOfTheDay();
+                setRandomHadith();
+            });
+        }
+        
+        function showPage(pageName) {
+            Object.values(pages).forEach(p => p.classList.add('hidden'));
+            if (pages[pageName]) {
+                pages[pageName].classList.remove('hidden');
+            }
+        }
+        
+        function toggleDarkMode() {
+            const isDarkMode = darkModeSwitch.checked;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode);
+            updateThemeIcon(isDarkMode);
+        }
+        
+        function updateThemeIcon(isDarkMode) {
+            themeToggle.innerHTML = isDarkMode ? 
+                '<i class="fas fa-sun"></i>' : 
+                '<i class="fas fa-moon"></i>';
+        }
+
+        function changeLanguage() {
+            currentLanguage = languageSelector.value;
+            localStorage.setItem('deenTimeLanguage', currentLanguage);
+            updateUIForLanguage();
+            fetchAyahOfTheDay();
+            setRandomHadith();
+        }
+
+        function updateUIForLanguage() {
+            const elements = document.querySelectorAll('[data-translate-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate-key');
+                if (translations[currentLanguage] && translations[currentLanguage][key]) {
+                     if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[currentLanguage][key];
+                    } else {
+                        el.innerHTML = translations[currentLanguage][key];
+                    }
+                }
+            });
+        }
+
+
+        // --- DATA FETCHING & DISPLAY ---
+        
+        function getLocationAndLoadData() {
+            currentLocationEl.textContent = getText('fetching_location');
+            prayerTimesContainer.innerHTML = `
+                <div class="loading-indicator">
+                    <div class="spinner"></div>
+                </div>
+            `;
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        fetchPrayerTimes(latitude, longitude);
+                        fetchLocationName(latitude, longitude);
+                    },
+                    () => {
+                        // Handle location error - show default (e.g., Makkah)
+                        currentLocationEl.textContent = getText('location_error');
+                        fetchPrayerTimes(21.4225, 39.8262); // Makkah coordinates
+                    }
+                );
+            } else {
+                 currentLocationEl.textContent = getText('location_error');
+                 fetchPrayerTimes(21.4225, 39.8262);
+            }
+            fetchAyahOfTheDay();
+        }
+
+        async function fetchPrayerTimes(lat, lon) {
+            try {
+                const method = calcMethodSelector.value;
+                const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=${method}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                
+                prayerTimesData = data.data.timings;
+                displayPrayerTimes(prayerTimesData);
+                
+                const hijri = data.data.date.hijri;
+                hijriDateEl.textContent = `${hijri.day} ${hijri.month.en} ${hijri.year} AH`;
+
+            } catch (error) {
+                prayerTimesContainer.innerHTML = `<p>Error fetching prayer times. Please try again later.</p>`;
+                console.error("Error fetching prayer times:", error);
+            }
+        }
+
+        async function fetchLocationName(lat, lon) {
+             try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                currentLocationEl.textContent = `${data.address.city || data.address.town || data.address.village}, ${data.address.country}`;
+            } catch (error) {
+                currentLocationEl.textContent = 'Unknown Location';
+                console.error("Error fetching location name:", error);
+            }
+        }
+
+        async function fetchAyahOfTheDay() {
+            try {
+                const randomAyah = Math.floor(Math.random() * 6236) + 1;
+                const translationIdentifier = currentLanguage === 'bn' ? 'bn.bengali' : 'en.asad';
+
+                const [textRes, audioRes] = await Promise.all([
+                    fetch(`https://api.alquran.cloud/v1/ayah/${randomAyah}/${translationIdentifier}`),
+                    fetch(`https://api.alquran.cloud/v1/ayah/${randomAyah}/ar.alafasy`)
+                ]);
+
+                if (!textRes.ok || !audioRes.ok) throw new Error('Failed to fetch Ayah data');
+
+                const textData = await textRes.json();
+                const audioData = await audioRes.json();
+                
+                ayahRefEl.textContent = `${textData.data.surah.englishName}: ${textData.data.numberInSurah}`;
+                ayahTranslationEl.textContent = textData.data.text;
+                ayahArabicEl.textContent = audioData.data.text;
+                currentAyahAudioUrl = audioData.data.audio;
+
+            } catch (error) {
+                ayahArabicEl.textContent = "Could not load Ayah.";
+                ayahTranslationEl.textContent = "Please check your internet connection and try again.";
+                console.error("Error fetching Ayah of the day:", error);
+            }
+        }
+
+        function setRandomHadith() {
+            const randomIndex = Math.floor(Math.random() * hadiths.length);
+            const hadith = hadiths[randomIndex];
+            hadithArabicEl.textContent = hadith.arabic;
+            hadithTranslationEl.textContent = hadith.translation;
+            hadithRefEl.textContent = hadith.reference;
+        }
+
+        function displayPrayerTimes(times) {
+            const prayersToShow = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            prayerTimesContainer.innerHTML = '';
+            prayersToShow.forEach(prayer => {
+                const time = times[prayer];
+                const prayerEl = document.createElement('div');
+                prayerEl.className = 'prayer-time';
+                prayerEl.innerHTML = `
+                    <div class="prayer-name">${prayer}</div>
+                    <div>${time}</div>
+                `;
+                prayerTimesContainer.appendChild(prayerEl);
+            });
+        }
+        
+        async function performSearch(query) {
+            if (!query) {
+                searchResultsContainer.innerHTML = `<div class="card"><p>${getText('search_prompt')}</p></div>`;
+                return;
+            }
+
+            searchResultsContainer.innerHTML = `<div class="card"><p>Searching for "${query}"...</p></div>`;
+
+            try {
+                // Use a more reliable search endpoint
+                const response = await fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/en.asad`);
+                if (!response.ok) throw new Error('Search failed');
+                const data = await response.json();
+
+                if (data.data.count === 0) {
+                    searchResultsContainer.innerHTML = `<div class="card"><p>No results found for "${query}".</p></div>`;
+                    return;
+                }
+                
+                searchResultsContainer.innerHTML = '';
+                data.data.matches.forEach(match => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <p class="arabic" style="text-align:left; font-size:18px;">${match.text}</p>
+                        <p style="text-align:right; color: var(--primary-color); font-weight: bold;">${match.surah.englishName}: ${match.numberInSurah}</p>
+                    `;
+                    searchResultsContainer.appendChild(card);
+                });
+
+            } catch(error) {
+                searchResultsContainer.innerHTML = `<div class="card"><p>Error during search. Please try again.</p></div>`;
+                console.error("Search error:", error);
+            }
+        }
+
+        // --- INTERACTIVITY ---
+        
+        function toggleAyahAudio() {
+            const icon = audioBtn.querySelector('i');
+            const text = audioBtn.querySelector('span');
+
+            if (audioPlayer.paused) {
+                if (!currentAyahAudioUrl) return;
+                audioPlayer.src = currentAyahAudioUrl;
+                audioPlayer.play();
+                icon.className = 'fas fa-pause';
+                text.textContent = getText('pause');
+            } else {
+                audioPlayer.pause();
+                icon.className = 'fas fa-play';
+                text.textContent = getText('play');
+            }
+            audioPlayer.onended = () => {
+                icon.className = 'fas fa-play';
+                text.textContent = getText('play');
+            };
+        }
+
+        function shareContent(event) {
+            const card = event.target.closest('.card');
+            const arabicText = card.querySelector('.arabic')?.textContent.trim();
+            const translationText = card.querySelector('.translation')?.textContent.trim();
+            const reference = card.querySelector('#ayah-reference')?.textContent.trim() || 
+                             card.querySelector('#hadith-reference')?.textContent.trim() || 
+                             'DeenTime+';
+
+            const shareText = `${reference}\n\n${arabicText}\n\n${translationText}\n\n- Shared from DeenTime+`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: `DeenTime+ | ${reference}`,
+                    text: shareText,
+                }).catch(console.error);
+            } else {
+                // Fallback for desktop or unsupported browsers
+                navigator.clipboard.writeText(shareText)
+                    .then(() => alert('Content copied to clipboard!'))
+                    .catch(() => alert('Could not copy content.'));
+            }
+        }
+        
+        function toggleLike(event) {
+            const icon = event.currentTarget.querySelector('i');
+            icon.classList.toggle('far'); // regular
+            icon.classList.toggle('fas'); // solid
+        }
+
+        function getText(key) {
+            return translations[currentLanguage][key] || key;
+        }
+
+        // --- VOICE ASSISTANT ---
+
+        function setupVoiceRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!window.SpeechRecognition) {
+                voiceBtn.disabled = true;
+                voiceResultEl.innerHTML = `<p>Voice recognition not supported in this browser.</p>`;
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.interimResults = false;
+            recognition.lang = currentLanguage === 'bn' ? 'bn-BD' : 'en-US';
+
+            voiceBtn.addEventListener('click', () => {
+                if (voiceRecognitionActive) {
+                    recognition.stop();
+                    voiceBtn.classList.remove('listening');
+                    voiceRecognitionActive = false;
+                    return;
+                }
+                
+                // Request microphone permission
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(() => {
+                        // Permission granted
+                        permissionWarning.style.display = 'none';
+                        recognition.lang = currentLanguage === 'bn' ? 'bn-BD' : 'en-US';
+                        recognition.start();
+                        voiceResultEl.innerHTML = `<p>${getText('listening')}</p>`;
+                        voiceBtn.classList.add('listening');
+                        voiceRecognitionActive = true;
+                    })
+                    .catch(err => {
+                        // Permission denied
+                        console.error('Microphone permission error:', err);
+                        permissionWarning.style.display = 'block';
+                        voiceResultEl.innerHTML = `<p>${getText('permission_warning')}</p>`;
+                    });
+            });
+
+            recognition.onresult = (event) => {
+                const command = event.results[0][0].transcript.toLowerCase();
+                voiceResultEl.innerHTML = `
+                    <p>You said: <strong>${command}</strong></p>
+                    <p>${getText('processing')}</p>
+                `;
+                handleVoiceCommand(command);
+                voiceBtn.classList.remove('listening');
+                voiceRecognitionActive = false;
+            };
+            
+            recognition.onerror = (event) => {
+                let errorMsg = `Error: ${event.error}`;
+                if (event.error === 'not-allowed') {
+                    errorMsg = getText('permission_warning');
+                    permissionWarning.style.display = 'block';
+                }
+                voiceResultEl.innerHTML = `<p>${errorMsg}</p>`;
+                voiceBtn.classList.remove('listening');
+                voiceRecognitionActive = false;
+            };
+
+            recognition.onend = () => {
+                voiceBtn.classList.remove('listening');
+                voiceRecognitionActive = false;
+            };
+        }
+        
+        function handleVoiceCommand(command) {
+            let response = '';
+
+            // Prayer Time command
+            const prayerKeywords = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'sunrise', 'ফজর', 'যোহর', 'আসর', 'মাগরিব', 'এশা'];
+            const foundPrayer = prayerKeywords.find(p => command.includes(p));
+
+            if (foundPrayer) {
+                // Normalize prayer name for data access
+                let prayerKey = foundPrayer;
+                if (['ফজর'].includes(prayerKey)) prayerKey = 'Fajr';
+                if (['যোহর', 'dhuhr'].includes(prayerKey)) prayerKey = 'Dhuhr';
+                if (['আসর', 'asr'].includes(prayerKey)) prayerKey = 'Asr';
+                if (['মাগরিব', 'maghrib'].includes(prayerKey)) prayerKey = 'Maghrib';
+                if (['এশা', 'isha'].includes(prayerKey)) prayerKey = 'Isha';
+                
+                const time = prayerTimesData[prayerKey];
+                response = time ? `${getText('prayer_time_for')} ${prayerKey} ${getText('is')} ${time}` : `Could not find time for ${prayerKey}.`;
+            }
+            // Play Surah command
+            else if (command.includes('play surah') || command.includes('surah') || command.includes('সূরা')) {
+                const surahName = command.replace('play surah', '').replace('surah', '').replace('সূরা', '').trim();
+                response = `${getText('playing_surah')} ${surahName || 'Fatiha'}`;
+                // Play Surah Fatiha audio as an example
+                audioPlayer.src = 'https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/001.mp3';
+                audioPlayer.play();
+            }
+            // Hadith command
+            else if (command.includes('hadith') || command.includes('hadees') || command.includes('হাদিস')) {
+                setRandomHadith();
+                response = getText('hadith_of_day');
+            }
+            // Other commands...
+            else {
+                response = getText('command_unrecognized');
+            }
+            
+            voiceResultEl.innerHTML += `<div class="voice-response">
+                <div>${response}</div>
+            </div>`;
+        }
+
+        // --- INITIALIZE APP ---
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
